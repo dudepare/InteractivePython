@@ -12,3 +12,7 @@ for aword in wordlist:
 			letterlist.append(aletter)
 print(letterlist)
 
+newletterlist = []
+[ newletterlist.append(letter) for word in wordlist for letter in word if letter not in newletterlist]
+
+print(newletterlist)
