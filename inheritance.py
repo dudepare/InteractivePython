@@ -96,6 +96,10 @@ class OrGate(BinaryGate):
 		else:
 			return 0
 
+
+
+
+
 class NotGate(UnaryGate):
 
 	def __init__(self,n):
@@ -125,15 +129,51 @@ class Connector:
 	def getTo(self):
 		return self.togate
 
+class NandGate(BinaryGate):
+
+	def __init__(self, n):
+		BinaryGate.__init__(self,n)
+
+		self.gateAnd = AndGate(n)
+		self.gateNot = NotGate(n)
+		self.conn = Connector(self.gateAnd, self.gateNot)
+
+	def performGateLogic(self):
+		return self.gateNot.getOutput()
+
+class NorGate(BinaryGate):
+
+	def __init__(self, n):
+		BinaryGate.__init__(self, n)
+
+		self.gateOr = OrGate(n)
+		self.gateNot = NotGate(n)
+		self.conn = Connector(self.GateOr, self.gateNot)
+
+	def performGateLogic(self):
+		return self.gateNot.getOutput()
 
 def main():
-	g1 = AndGate("G1")
-	g2 = AndGate("G2")
-	g3 = OrGate("G3")
-	g4 = NotGate("G4")
+	# prove NOT ((A and B) or (C and D)) 
+	#       == NOT (A and B) and NOT (C and D)
+
+	g1 = AndGate("AB")
+	g2 = AndGate("CD")
+	g3 = OrGate("ABCD")
+	g4 = NotGate("Output1")
 	c1 = Connector(g1, g3)
 	c2 = Connector(g2, g3)
 	c3 = Connector(g3, g4)
-	print(g4.getOutput())
+
+	g5 = NandGate("AB")
+	g6 = NandGate("CD")
+	g7 = AndGate("ABCD")
+	c4 = Connector(g5, g7)
+	c5 = Connector(g6, g7)
+
+	if g4.getOutput() == g7.getOutput():
+		print("Success: Circuit outputs matched.")
+	else:
+		print("Fail: Circuit outputs did not match.")
 
 main()
