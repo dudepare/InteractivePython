@@ -23,10 +23,26 @@ class BinaryGate(LogicGate):
 		self.pinB = None
 
 	def getPinA(self):
-		return int(input("Enter Pin A input for gate " + self.getLabel() + "-->"))
+		if self.pinA == None:
+			return int(input("Enter Pin A input for gate " + self.getLabel() + "-->"))
+		else:
+			return self.pinA.getFrom().getOutput()
 
 	def getPinB(self):
-		return int(input("Enter Pin B input for gate " + self.getLabel() + "-->"))
+		if self.pinB == None:
+			return int(input("Enter Pin B input for gate " + self.getLabel() + "-->"))
+		else:
+			return self.pinB.getFrom().getOutput()
+
+	def setNextPin(self, source):
+		if self.pinA == None:
+			self.pinA = source
+		else:
+			if self.pinB == None:
+				self.pinB = source
+			else:
+				print("Cannot Connect: NO EMPTY PINS")
+
 
 class UnaryGate(LogicGate):
 
@@ -38,7 +54,17 @@ class UnaryGate(LogicGate):
 		self.Pin = None
 
 	def getPin(self):
-		return int(input("Enter Pin input for gate "+ self.getLabel() + "-->"))
+		if self.Pin == None:
+			return int(input("Enter Pin input for gate "+ self.getLabel() + "-->"))
+		else:
+			return self.Pin.getFrom().getOutput()
+
+	def setNextPin(self, source):
+		if self.Pin  == None:
+			self.Pin = source
+		else:
+			print("Cannot Connect: NO EMPTY PINS")
+
 
 class AndGate(BinaryGate):
 
@@ -84,11 +110,30 @@ class NotGate(UnaryGate):
 		else:
 			return 1
 
-g1 = AndGate("And Gate ")
-print(g1.getLabel(), g1.getOutput())
 
-g2 = OrGate("Or Gate ")
-print(g2.getLabel(), g2.getOutput())
+class Connector:
 
-g3 = NotGate("Not Gate ")
-print(g3.getLabel(), g3.getOutput())
+	def __init__(self, fgate, tgate):
+		self.fromgate = fgate
+		self.togate = tgate
+
+		tgate.setNextPin(self)
+
+	def getFrom(self):
+		return self.fromgate
+
+	def getTo(self):
+		return self.togate
+
+
+def main():
+	g1 = AndGate("G1")
+	g2 = AndGate("G2")
+	g3 = OrGate("G3")
+	g4 = NotGate("G4")
+	c1 = Connector(g1, g3)
+	c2 = Connector(g2, g3)
+	c3 = Connector(g3, g4)
+	print(g4.getOutput())
+
+main()
