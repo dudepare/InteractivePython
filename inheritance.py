@@ -96,10 +96,6 @@ class OrGate(BinaryGate):
 		else:
 			return 0
 
-
-
-
-
 class NotGate(UnaryGate):
 
 	def __init__(self,n):
@@ -153,6 +149,38 @@ class NorGate(BinaryGate):
 	def performGateLogic(self):
 		return self.gateNot.getOutput()
 
+class XorGate(BinaryGate):
+
+	def __init__(self, n):
+
+		BinaryGate.__init__(self, n)
+
+	def performGateLogic(self):
+
+		a = self.getPinA()
+		b = self.getPinB()
+
+		if a == b:
+			return 0
+		else:
+			return 1
+
+class XnorGate(BinaryGate):
+
+	def __init__(self, n):
+
+		BinaryGate.__init__(self, n)
+
+	def performGateLogic(self):
+
+		a = self.getPinA()
+		b = self.getPinB()
+
+		if a == b:
+			return 1
+		else:
+			return 0
+
 def main():
 	# prove NOT ((A and B) or (C and D)) 
 	#       == NOT (A and B) and NOT (C and D)
@@ -175,5 +203,10 @@ def main():
 		print("Success: Circuit outputs matched.")
 	else:
 		print("Fail: Circuit outputs did not match.")
+
+	xor_gate = XorGate("xor")
+	print(xor_gate.getOutput())
+	xnor_gate = XnorGate("xnor")
+	print(xnor_gate.getOutput())
 
 main()
