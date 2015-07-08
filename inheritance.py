@@ -22,17 +22,23 @@ class BinaryGate(LogicGate):
 		self.pinA = None
 		self.pinB = None
 
+	def setPinA(self, val):
+		self.pinA = int(val)
+
+	def setPinB(self, val):
+		self.pinB = int(val)
+
 	def getPinA(self):
 		if self.pinA == None:
 			return int(input("Enter Pin A input for gate " + self.getLabel() + "-->"))
 		else:
-			return self.pinA.getFrom().getOutput()
+			return self.pinA
 
 	def getPinB(self):
 		if self.pinB == None:
 			return int(input("Enter Pin B input for gate " + self.getLabel() + "-->"))
 		else:
-			return self.pinB.getFrom().getOutput()
+			return self.pinB
 
 	def setNextPin(self, source):
 		if self.pinA == None:
@@ -181,32 +187,51 @@ class XnorGate(BinaryGate):
 		else:
 			return 0
 
+
+class HalfAdder:
+
+	def __init__(self, label):
+
+		self.pinA = None
+		self.pinB = None
+		self.sum = None
+		self.carry = None
+		self.label = label
+		self.gateXor = XorGate(self.label)
+		self.gateAnd = AndGate(self.label)
+
+	def getPinA(self):
+
+		if self.pinA == None:
+			self.pinA = int(input("Enter Pin A input for circuit -->"))
+			self.gateXor.setPinA(self.pinA)
+			self.gateAnd.setPinA(self.pinA)
+
+	def getPinB(self):
+
+		if self.pinB == None:
+			self.pinB = int(input("Enter Pin B input for circuit -->"))
+			self.gateXor.setPinB(self.pinB)
+			self.gateAnd.setPinB(self.pinB)
+
+	def getSum(self):
+
+		return self.gateXor.getOutput()
+
+	def getCarry(self):
+
+		return self.gateAnd.getOutput()
+
+	def printOutput(self):
+
+		print("Outputs:  Sum (" + str(self.getSum()) + ")  Carry (" + str(self.getCarry()) + ")" )
+
+
 def main():
-	# prove NOT ((A and B) or (C and D)) 
-	#       == NOT (A and B) and NOT (C and D)
 
-	g1 = AndGate("AB")
-	g2 = AndGate("CD")
-	g3 = OrGate("ABCD")
-	g4 = NotGate("Output1")
-	c1 = Connector(g1, g3)
-	c2 = Connector(g2, g3)
-	c3 = Connector(g3, g4)
-
-	g5 = NandGate("AB")
-	g6 = NandGate("CD")
-	g7 = AndGate("ABCD")
-	c4 = Connector(g5, g7)
-	c5 = Connector(g6, g7)
-
-	if g4.getOutput() == g7.getOutput():
-		print("Success: Circuit outputs matched.")
-	else:
-		print("Fail: Circuit outputs did not match.")
-
-	xor_gate = XorGate("xor")
-	print(xor_gate.getOutput())
-	xnor_gate = XnorGate("xnor")
-	print(xnor_gate.getOutput())
+	half = HalfAdder("h1")
+	half.getPinA()
+	half.getPinB()
+	half.printOutput()
 
 main()
